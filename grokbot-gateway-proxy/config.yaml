@@ -1,0 +1,24 @@
+name: GrokBot Gateway Proxy
+version: "0.1.0"
+slug: grokbot_gateway_proxy
+description: Reverse proxy ส่งต่อไปยัง GrokBot gateway บนเมช NetBird commu (atomgrok)
+url: https://github.com/thebuilderofmoebius9/haos-grokbot-gateway-proxy
+arch:
+  - aarch64
+  - amd64
+  - armhf
+  - armv7
+  - i386
+init: false
+ports:
+  8140/tcp: 8140
+ports_description:
+  8140/tcp: GrokBot gateway proxy endpoint
+options:
+  upstream_host: 100.64.142.60
+  upstream_port: 1340
+  auth_token: ""
+schema:
+  upstream_host: str
+  upstream_port: port
+  auth_token: password

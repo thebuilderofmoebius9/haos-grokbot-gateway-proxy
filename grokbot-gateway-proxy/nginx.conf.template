@@ -1,0 +1,38 @@
+map $http_authorization $proxy_auth {
+    default $http_authorization;
+    ""      "Bearer ${AUTH_TOKEN}";
+}
+
+map $http_upgrade $connection_upgrade {
+    default upgrade;
+    ''      close;
+}
+
+server {
+    listen 8140;
+
+    # health endpoint ของ nginx เอง ไว้เช็คว่า proxy มีชีวิตโดยไม่แตะ upstream
+    location = /proxy-health {
+        access_log off;
+        return 200 "ok\n";
+    }
+
+    location / {
+        proxy_pass http://${UPSTREAM_HOST}:${UPSTREAM_PORT};
+
+        # ส่ง Authorization ของ client ต่อเสมอ; ถ้า client ไม่ส่งและตั้ง auth_token
+        # ไว้ใน options ให้ฉีด token นั้นแทน
+        proxy_set_header Authorization $proxy_auth;
+
+        proxy_http_version 1.1;
+        proxy_set_header Host $proxy_host;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection $connection_upgrade;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+
+        # sendPrompt อาจใช้เวลานาน รอ upstream ได้ถึง 5 นาที
+        proxy_read_timeout 300s;
+        proxy_send_timeout 300s;
+        client_max_body_size 5m;
+    }
+}

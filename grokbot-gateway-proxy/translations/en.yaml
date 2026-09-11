@@ -1,0 +1,6 @@
+name: GrokBot Gateway Proxy
+description: Reverse proxy to the GrokBot gateway over the NetBird commu mesh (atomgrok)
+configuration:
+  upstream_host: NetBird mesh IP or hostname of the GrokBot gateway (default 100.64.142.60 = atomgrok.commu.oracle)
+  upstream_port: Gateway port on the GrokBot box (default 1340)
+  auth_token: Optional bearer token injected when a caller sends no Authorization header. Leave empty for pure pass-through.
